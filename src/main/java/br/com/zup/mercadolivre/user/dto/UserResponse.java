@@ -2,7 +2,7 @@ package br.com.zup.mercadolivre.user.dto;
 
 import br.com.zup.mercadolivre.user.model.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UserResponse {
 
@@ -10,7 +10,7 @@ public class UserResponse {
     private String address;
     private String cpf;
     private String email;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     public UserResponse(User user) {
         this.name = user.getName();
@@ -36,7 +36,7 @@ public class UserResponse {
         return email;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }

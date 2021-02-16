@@ -6,8 +6,10 @@ import br.com.zup.mercadolivre.user.model.User;
 import br.com.zup.mercadolivre.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.Optional;
 
 @RestController
@@ -30,9 +32,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody @Valid NewUserRequest request) {
+    public ResponseEntity<?> create(@RequestBody @Valid NewUserRequest request, UriComponentsBuilder uriBuilder) {
         User user = request.toModel();
         userRepository.save(user);
-        return ResponseEntity.ok().build();
+        URI uri = uriBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
+        return ResponseEntity.created(uri).body(new UserResponse(user));
     }
 }

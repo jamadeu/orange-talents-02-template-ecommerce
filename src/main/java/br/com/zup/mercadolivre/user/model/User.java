@@ -6,7 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class User {
@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = false)
     private String password;
     @PastOrPresent
-    private LocalDate createdAt = LocalDate.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Deprecated
     public User() {
@@ -44,6 +44,10 @@ public class User {
         this.cpf = cpf;
         this.email = email;
         this.password = password;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -62,7 +66,7 @@ public class User {
         return email;
     }
 
-    public LocalDate getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 }
