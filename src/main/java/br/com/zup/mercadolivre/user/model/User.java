@@ -45,4 +45,24 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public LocalDate getCreatedAt() {
+        return createdAt;
+    }
 }
