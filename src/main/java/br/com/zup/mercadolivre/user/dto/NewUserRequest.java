@@ -1,6 +1,8 @@
 package br.com.zup.mercadolivre.user.dto;
 
+import br.com.zup.mercadolivre.user.model.User;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -40,5 +42,10 @@ public class NewUserRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public User toModel() {
+        String passwordEncoded = new BCryptPasswordEncoder().encode(password);
+        return new User(name, address, cpf, email, passwordEncoded);
     }
 }

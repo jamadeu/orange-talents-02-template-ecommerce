@@ -4,7 +4,6 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
@@ -30,7 +29,6 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
     @NotEmpty
-    @Min(6)
     @Column(nullable = false)
     private String password;
     @PastOrPresent
@@ -40,11 +38,26 @@ public class User {
     public User() {
     }
 
-    public User(@NotEmpty String name, @NotEmpty String address, @NotEmpty @CPF String cpf, @NotEmpty @Email String email, @NotEmpty @Min(6) String password) {
+    public User(@NotEmpty String name, @NotEmpty String address, @NotEmpty @CPF String cpf, @NotEmpty @Email String email, @NotEmpty String password) {
         this.name = name;
         this.address = address;
         this.cpf = cpf;
         this.email = email;
         this.password = password;
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", cpf='" + cpf + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
