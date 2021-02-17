@@ -1,16 +1,15 @@
 package br.com.zup.mercadolivre.product.dto;
 
 import br.com.zup.mercadolivre.category.model.Category;
-import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.user.model.User;
+import io.jsonwebtoken.lang.Assert;
 
 import javax.persistence.EntityManager;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class NewProductRequest {
 
@@ -24,6 +23,8 @@ public class NewProductRequest {
     private int availableQuantity;
     @NotEmpty
     private List<CharacteristicRequest> characteristics = new ArrayList<>();
+    @NotEmpty
+    private List<ImageRequest> images = new ArrayList<>();
     @NotEmpty
     @Size(max = 1000)
     private String description;
@@ -54,8 +55,9 @@ public class NewProductRequest {
         return categoryId;
     }
 
-    public Product toModel(CategoryRepository categoryRepository, User owner) {
-        Category category = categoryRepository.findById(categoryId).get();
+    public Product toModel(EntityManager em, User owner) {
+        Category category = em.find(Category.class, categoryId);
+        Assert.notNull(category);
         return new Product(name, price, availableQuantity, characteristics, description, category, owner);
     }
 }

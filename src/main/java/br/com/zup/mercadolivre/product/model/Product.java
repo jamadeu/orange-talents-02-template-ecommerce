@@ -33,6 +33,8 @@ public class Product {
     @NotEmpty
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<ProductCharacteristic> characteristics = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
+    private List<ProductImage> images = new ArrayList<>();
     @NotEmpty
     @Size(max = 1000)
     @Column(nullable = false)
@@ -62,6 +64,10 @@ public class Product {
                 characteristic.toModel(this)).collect(Collectors.toList()));
     }
 
+    public List<ProductImage> getImages() {
+        return images;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -70,6 +76,7 @@ public class Product {
                 ", price=" + price +
                 ", availableQuantity=" + availableQuantity +
                 ", characteristics=" + characteristics +
+                ", images=" + images +
                 ", description='" + description + '\'' +
                 ", category=" + category +
                 ", owner=" + owner +
@@ -124,5 +131,9 @@ public class Product {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void addImages(List<String> urls) {
+        this.images.addAll(urls.stream().map(url -> new ProductImage(url, this)).collect(Collectors.toList()));
     }
 }
