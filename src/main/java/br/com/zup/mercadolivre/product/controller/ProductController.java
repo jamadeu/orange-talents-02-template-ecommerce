@@ -2,6 +2,7 @@ package br.com.zup.mercadolivre.product.controller;
 
 import br.com.zup.mercadolivre.product.dto.ImageRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
+import br.com.zup.mercadolivre.product.dto.OpinionRequest;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.util.UploaderFake;
 import br.com.zup.mercadolivre.user.model.User;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
@@ -50,11 +52,7 @@ public class ProductController {
     @PostMapping("/{id}/image")
     @Transactional
     public ResponseEntity<?> addImage(@Valid ImageRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
-        Optional<User> optional = userRepository.findByEmail(userDetails.getUsername());
-        if (optional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        User owner = optional.get();
+        User owner = validUserLoggedIn(userDetails);
         Product product = em.find(Product.class, productId);
         if (product == null) {
             return ResponseEntity.notFound().build();
@@ -67,7 +65,24 @@ public class ProductController {
         product.addImages(urls);
         em.merge(product);
         return ResponseEntity.ok(product);
+    }
 
+    @PostMapping("/{id}/opinion")
+    @Transactional
+    public ResponseEntity<?> addOpinion(@RequestBody @Valid OpinionRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = validUserLoggedIn(userDetails);
+        Product product = em.find(Product.class, productId);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        product.addOpinion(request, user);
+        em.merge(product);
+        return ResponseEntity.ok(product);
+    }
 
+    private User validUserLoggedIn(UserDetails userDetails) {
+        Optional<User> optional = userRepository.findByEmail(userDetails.getUsername());
+        Assert.isTrue(optional.isPresent(), "Error finding logged in user");
+        return optional.get();
     }
 }

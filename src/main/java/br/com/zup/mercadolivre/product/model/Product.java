@@ -2,6 +2,7 @@ package br.com.zup.mercadolivre.product.model;
 
 import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.product.dto.CharacteristicRequest;
+import br.com.zup.mercadolivre.product.dto.OpinionRequest;
 import br.com.zup.mercadolivre.user.model.User;
 
 import javax.persistence.*;
@@ -35,6 +36,8 @@ public class Product {
     private List<ProductCharacteristic> characteristics = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
     private List<ProductImage> images = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
+    private List<ProductOpinion> opinions = new ArrayList<>();
     @NotEmpty
     @Size(max = 1000)
     @Column(nullable = false)
@@ -68,20 +71,36 @@ public class Product {
         return images;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                ", availableQuantity=" + availableQuantity +
-                ", characteristics=" + characteristics +
-                ", images=" + images +
-                ", description='" + description + '\'' +
-                ", category=" + category +
-                ", owner=" + owner +
-                ", createdAt=" + createdAt +
-                '}';
+    public Long getId() {
+        return id;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public int getAvailableQuantity() {
+        return availableQuantity;
+    }
+
+    public List<ProductCharacteristic> getCharacteristics() {
+        return characteristics;
+    }
+
+    public List<ProductOpinion> getOpinions() {
+        return opinions;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     @Override
@@ -97,43 +116,19 @@ public class Product {
         return Objects.hash(id, name, price, availableQuantity, characteristics, description, category, owner, createdAt);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public int getAvailableQuantity() {
-        return availableQuantity;
-    }
-
-    public List<ProductCharacteristic> getCharacteristics() {
-        return characteristics;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Category getCategory() {
-        return category;
     }
 
     public User getOwner() {
         return owner;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
     public void addImages(List<String> urls) {
         this.images.addAll(urls.stream().map(url -> new ProductImage(url, this)).collect(Collectors.toList()));
+    }
+
+    public void addOpinion(OpinionRequest request, User user) {
+        this.opinions.add(request.toModel(this, user));
     }
 }
