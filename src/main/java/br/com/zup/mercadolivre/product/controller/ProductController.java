@@ -2,7 +2,6 @@ package br.com.zup.mercadolivre.product.controller;
 
 import br.com.zup.mercadolivre.product.dto.ImageRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
-import br.com.zup.mercadolivre.product.dto.OpinionRequest;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.util.UploaderFake;
 import br.com.zup.mercadolivre.user.model.User;
@@ -52,7 +51,9 @@ public class ProductController {
     @PostMapping("/{id}/image")
     @Transactional
     public ResponseEntity<?> addImage(@Valid ImageRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
-        User owner = validUserLoggedIn(userDetails);
+        Optional<User> optional = userRepository.findByEmail(userDetails.getUsername());
+        Assert.isTrue(optional.isPresent(), "Error finding logged in user");
+        User owner = optional.get();
         Product product = em.find(Product.class, productId);
         if (product == null) {
             return ResponseEntity.notFound().build();
@@ -60,29 +61,9 @@ public class ProductController {
         if (!product.getOwner().equals(owner)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
         List<String> urls = uploaderFake.send(request.getImages());
         product.addImages(urls);
         em.merge(product);
         return ResponseEntity.ok(product);
-    }
-
-    @PostMapping("/{id}/opinion")
-    @Transactional
-    public ResponseEntity<?> addOpinion(@RequestBody @Valid OpinionRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
-        User user = validUserLoggedIn(userDetails);
-        Product product = em.find(Product.class, productId);
-        if (product == null) {
-            return ResponseEntity.notFound().build();
-        }
-        product.addOpinion(request, user);
-        em.merge(product);
-        return ResponseEntity.ok(product);
-    }
-
-    private User validUserLoggedIn(UserDetails userDetails) {
-        Optional<User> optional = userRepository.findByEmail(userDetails.getUsername());
-        Assert.isTrue(optional.isPresent(), "Error finding logged in user");
-        return optional.get();
     }
 }

@@ -2,7 +2,6 @@ package br.com.zup.mercadolivre.product.model;
 
 import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.product.dto.CharacteristicRequest;
-import br.com.zup.mercadolivre.product.dto.OpinionRequest;
 import br.com.zup.mercadolivre.user.model.User;
 
 import javax.persistence.*;
@@ -126,9 +125,5 @@ public class Product {
 
     public void addImages(List<String> urls) {
         this.images.addAll(urls.stream().map(url -> new ProductImage(url, this)).collect(Collectors.toList()));
-    }
-
-    public void addOpinion(OpinionRequest request, User user) {
-        this.opinions.add(request.toModel(this, user));
     }
 }
