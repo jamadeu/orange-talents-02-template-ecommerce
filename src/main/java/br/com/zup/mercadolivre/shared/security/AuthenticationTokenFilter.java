@@ -4,6 +4,7 @@ import br.com.zup.mercadolivre.user.model.User;
 import br.com.zup.mercadolivre.user.repository.UserRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -13,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class AuthenticationTokenFilter extends OncePerRequestFilter {
-    private TokenService tokenService;
-    private UserRepository userRepository;
+    private final TokenService tokenService;
+    private final UserRepository userRepository;
 
     public AuthenticationTokenFilter(TokenService tokenService, UserRepository userRepository) {
         this.tokenService = tokenService;

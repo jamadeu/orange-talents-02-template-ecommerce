@@ -37,6 +37,8 @@ public class Product {
     private List<ProductImage> images = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
     private List<ProductOpinion> opinions = new ArrayList<>();
+    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
+    private List<ProductQuestion> questions = new ArrayList<>();
     @NotEmpty
     @Size(max = 1000)
     @Column(nullable = false)
@@ -100,6 +102,10 @@ public class Product {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public List<ProductQuestion> getQuestions() {
+        return questions;
     }
 
     @Override
