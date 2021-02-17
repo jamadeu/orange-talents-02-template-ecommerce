@@ -132,4 +132,9 @@ public class Product {
     public void addImages(List<String> urls) {
         this.images.addAll(urls.stream().map(url -> new ProductImage(url, this)).collect(Collectors.toList()));
     }
+
+    public Integer calcAverageRating(){
+        int total = this.opinions.stream().mapToInt(ProductOpinion::getRating).sum();
+        return total/opinions.size();
+    }
 }

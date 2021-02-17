@@ -2,6 +2,7 @@ package br.com.zup.mercadolivre.product.controller;
 
 import br.com.zup.mercadolivre.product.dto.ImageRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
+import br.com.zup.mercadolivre.product.dto.ProductDetailsResponse;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.util.UploaderFake;
 import br.com.zup.mercadolivre.user.model.User;
@@ -34,6 +35,16 @@ public class ProductController {
         this.userRepository = userRepository;
         this.uploaderFake = uploaderFake;
     }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<?> productDetail(@PathVariable("id") Long productId) {
+        Product product = em.find(Product.class, productId);
+        if (product == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+        }
+        return ResponseEntity.ok(new ProductDetailsResponse(product));
+    }
+
 
     @PostMapping
     @Transactional
