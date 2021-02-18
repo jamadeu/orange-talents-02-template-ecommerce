@@ -1,5 +1,6 @@
 package br.com.zup.mercadolivre.user.model;
 
+import br.com.zup.mercadolivre.purchase.model.Purchase;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,6 +40,8 @@ public class User implements UserDetails {
     private String password;
     @PastOrPresent
     private LocalDateTime createdAt = LocalDateTime.now();
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.MERGE)
+    private List<Purchase> purchases = new ArrayList<>();
 
     @Deprecated
     public User() {
@@ -56,6 +60,10 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+    
     @Override
     public String getPassword() {
         return this.password;

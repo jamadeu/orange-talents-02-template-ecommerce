@@ -137,4 +137,12 @@ public class Product {
         int total = this.opinions.stream().mapToInt(ProductOpinion::getRating).sum();
         return total/opinions.size();
     }
+
+    public boolean removeFromStock(Integer quantity) {
+        if(quantity > availableQuantity){
+            return false;
+        }
+        availableQuantity -= quantity;
+        return true;
+    }
 }
