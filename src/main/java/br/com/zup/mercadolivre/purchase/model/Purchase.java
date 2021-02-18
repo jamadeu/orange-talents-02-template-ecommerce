@@ -14,6 +14,7 @@ public class Purchase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
+    @Enumerated
     private PurchaseStatus status = PurchaseStatus.STARTED;
     @ManyToOne
     private Product product;
@@ -23,6 +24,7 @@ public class Purchase {
     @ManyToOne
     private User buyer;
     @NotNull
+    @Enumerated
     private PaymentGateway gateway;
 
     @Deprecated
@@ -58,5 +60,9 @@ public class Purchase {
 
     public PaymentGateway getGateway() {
         return gateway;
+    }
+
+    public void changeStatus(PurchaseStatus status) {
+        this.status = status;
     }
 }

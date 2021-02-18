@@ -56,6 +56,10 @@ public class PurchaseController {
         em.persist(purchase);
         PaymentGateway gateway = purchase.getGateway();
 
+        /*
+         * Send email to owner
+         * */
+
         if (gateway.equals(PaymentGateway.PAYPAL)) {
             return ResponseEntity.status(HttpStatus.FOUND)
                     .header("Location", "paypal.com/" + purchase.getId() + "?redirectUrl=http://localhost:8080/return-paypal/" + purchase.getId())
