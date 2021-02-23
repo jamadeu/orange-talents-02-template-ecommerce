@@ -1,7 +1,7 @@
 package br.com.zup.mercadolivre.category.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Category {
@@ -9,7 +9,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String name;
     @ManyToOne
@@ -19,7 +19,7 @@ public class Category {
     public Category() {
     }
 
-    public Category(@NotEmpty String name) {
+    public Category(@NotBlank String name) {
         this.name = name;
     }
 
