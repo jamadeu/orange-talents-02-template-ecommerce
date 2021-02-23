@@ -184,7 +184,7 @@ class UserControllerTestIT {
     @DisplayName("createdAt must be in the past")
     void test11() {
         NewUserRequest newUserRequest = UserCreator.createNewUserRequest();
-        ResponseEntity<?> response = testRestTemplate.postForEntity("/user", newUserRequest, void.class);
+        testRestTemplate.postForEntity("/user", newUserRequest, void.class);
         User user = userRepository.findByEmail(newUserRequest.getEmail()).orElseThrow();
 
         Assertions.assertThat(user.getCreatedAt()).isBefore(LocalDateTime.now());

@@ -3,7 +3,6 @@ package br.com.zup.mercadolivre.user.controller;
 import br.com.zup.mercadolivre.shared.security.TokenService;
 import br.com.zup.mercadolivre.user.dto.AuthenticationRequest;
 import br.com.zup.mercadolivre.user.dto.TokenResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,14 +19,17 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
+
+    public AuthenticationController(AuthenticationManager authenticationManager, TokenService tokenService) {
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
+    }
 
     @PostMapping
-    public ResponseEntity<?> authenticate(@RequestBody @Valid AuthenticationRequest request){
+    public ResponseEntity<?> authenticate(@RequestBody @Valid AuthenticationRequest request) {
         UsernamePasswordAuthenticationToken login = request.convert();
         try {
             Authentication authenticate = authenticationManager.authenticate(login);

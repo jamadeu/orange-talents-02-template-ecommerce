@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -34,16 +33,13 @@ class CategoryControllerIT {
     private MockMvc mockMvc;
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
-
-    @Autowired
     private CategoryRepository categoryRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     private Long idMotherCategory;
 
@@ -68,5 +64,56 @@ class CategoryControllerIT {
                 .status()
                 .is(200))
                 .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "user@email.com", password = "123456")
+    @DisplayName("create returns status code 200 when idMotherCategory is null")
+    void test2() throws Exception {
+        NewCategoryRequest newCategoryRequest = CategoryCreator.createNewCategoryRequestIdMotherNull();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newCategoryRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(200))
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "user@email.com", password = "123456")
+    @DisplayName("create returns status code 400 when idMotherCategory is invalid")
+    void test3() throws Exception {
+        NewCategoryRequest newCategoryRequest = CategoryCreator.createNewCategoryRequest("Category", idMotherCategory + 1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newCategoryRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .string("Mother Category not found")
+        ).andReturn();
+    }
+
+    @Test
+    @WithMockUser(username = "user@email.com", password = "123456")
+    @DisplayName("create returns status code 400 when name is invalid")
+    void test4() throws Exception {
+        NewCategoryRequest newCategoryRequest = CategoryCreator.createNewCategoryRequest(null, idMotherCategory + 1);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/category")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newCategoryRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
+        ).andReturn();
     }
 }

@@ -16,6 +16,16 @@ public class UserCreator {
         );
     }
 
+    public static User createUserToAuthTests(String email, String password) {
+        return new User(
+                "User",
+                "Address",
+                "949.053.040-91",
+                email,
+                password
+        );
+    }
+
     public static User createUserPasswordEncrypted() {
         return new User(
                 "User",
