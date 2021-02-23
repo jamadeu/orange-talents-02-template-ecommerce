@@ -22,6 +22,14 @@ public class NewCategoryRequest {
         this.idMotherCategory = idMotherCategory;
     }
 
+    @Override
+    public String toString() {
+        return "NewCategoryRequest{" +
+                "name:'" + name + '\'' +
+                ", idMotherCategory:" + idMotherCategory +
+                '}';
+    }
+
     public String getName() {
         return name;
     }

@@ -11,6 +11,12 @@ public class CategoryCreator {
         );
     }
 
+    public static Category createMotherCategory() {
+        return new Category(
+                "MotherCategory"
+        );
+    }
+
     public static NewCategoryRequest createNewCategoryRequestIdMotherNull() {
         return new NewCategoryRequest(
                 "Category",

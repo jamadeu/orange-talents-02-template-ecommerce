@@ -2,6 +2,7 @@ package br.com.zup.mercadolivre.user.controller;
 
 import br.com.zup.mercadolivre.user.dto.NewUserRequest;
 import br.com.zup.mercadolivre.user.model.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserCreator {
 
@@ -12,6 +13,16 @@ public class UserCreator {
                 "949.053.040-91",
                 "user@email.com",
                 "123456"
+        );
+    }
+
+    public static User createUserPasswordEncrypted() {
+        return new User(
+                "User",
+                "Address",
+                "949.053.040-91",
+                "user@email.com",
+                new BCryptPasswordEncoder().encode("123456")
         );
     }
 
