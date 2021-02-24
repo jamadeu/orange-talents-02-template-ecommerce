@@ -1,9 +1,12 @@
 package br.com.zup.mercadolivre.product.controller;
 
+import br.com.zup.mercadolivre.category.model.Category;
+import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.product.dto.ImageRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
 import br.com.zup.mercadolivre.product.dto.ProductDetailsResponse;
 import br.com.zup.mercadolivre.product.model.Product;
+import br.com.zup.mercadolivre.product.repository.ProductRepository;
 import br.com.zup.mercadolivre.product.util.UploaderFake;
 import br.com.zup.mercadolivre.user.model.User;
 import br.com.zup.mercadolivre.user.repository.UserRepository;
@@ -28,12 +31,16 @@ public class ProductController {
     @PersistenceContext
     private EntityManager em;
 
+    private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final UploaderFake uploaderFake;
+    private final CategoryRepository categoryRepository;
 
-    public ProductController(UserRepository userRepository, UploaderFake uploaderFake) {
+    public ProductController(UserRepository userRepository, UploaderFake uploaderFake, ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.userRepository = userRepository;
         this.uploaderFake = uploaderFake;
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping("/{id}/details")
@@ -54,9 +61,14 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         User owner = optional.get();
-        Product product = request.toModel(em, owner);
-        em.persist(product);
-        return ResponseEntity.ok(product);
+        Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
+        if(optionalCategory.isEmpty()){
+            return ResponseEntity.badRequest().body("Category not found");
+        }
+        Category category = optionalCategory.get();
+        Product product = request.toModel(category, owner);
+        productRepository.save(product);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/image")

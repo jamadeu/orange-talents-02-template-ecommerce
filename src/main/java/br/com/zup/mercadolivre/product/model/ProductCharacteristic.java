@@ -3,7 +3,7 @@ package br.com.zup.mercadolivre.product.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
@@ -12,9 +12,9 @@ public class ProductCharacteristic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty
+    @NotBlank
     private String name;
-    @NotEmpty
+    @NotBlank
     private String description;
     @ManyToOne
     @JsonIgnore
@@ -24,10 +24,14 @@ public class ProductCharacteristic {
     public ProductCharacteristic() {
     }
 
-    public ProductCharacteristic(@NotEmpty String name, @NotEmpty String description, Product product) {
+    public ProductCharacteristic(@NotBlank String name, @NotBlank String description, Product product) {
         this.name = name;
         this.description = description;
         this.product = product;
+    }
+
+    public ProductCharacteristic(@NotBlank String name) {
+        this.name = name;
     }
 
     @Override

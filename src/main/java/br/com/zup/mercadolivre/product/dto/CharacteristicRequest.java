@@ -4,15 +4,20 @@ import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.model.ProductCharacteristic;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class CharacteristicRequest {
 
-    @NotEmpty
+    @NotBlank
     private String name;
-    @NotEmpty
+    @NotBlank
     private String description;
+
+    public CharacteristicRequest(@NotBlank String name, @NotBlank String description) {
+        this.name = name;
+        this.description = description;
+    }
 
     public String getName() {
         return name;

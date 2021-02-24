@@ -3,9 +3,7 @@ package br.com.zup.mercadolivre.product.dto;
 import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.user.model.User;
-import io.jsonwebtoken.lang.Assert;
 
-import javax.persistence.EntityManager;
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,7 +11,7 @@ import java.util.List;
 
 public class NewProductRequest {
 
-    @NotEmpty
+    @NotBlank
     private String name;
     @NotNull
     @Positive
@@ -21,15 +19,24 @@ public class NewProductRequest {
     @NotNull
     @PositiveOrZero
     private int availableQuantity;
-    @NotEmpty
+    @NotNull
     private List<CharacteristicRequest> characteristics = new ArrayList<>();
-    @NotEmpty
+    @NotNull
     private List<ImageRequest> images = new ArrayList<>();
-    @NotEmpty
+    @NotBlank
     @Size(max = 1000)
     private String description;
     @NotNull
     private Long categoryId;
+
+    public NewProductRequest(@NotBlank String name, @NotNull @Positive BigDecimal price, @NotNull @PositiveOrZero int availableQuantity, @NotNull List<CharacteristicRequest> characteristics, @NotBlank @Size(max = 1000) String description, @NotNull Long categoryId) {
+        this.name = name;
+        this.price = price;
+        this.availableQuantity = availableQuantity;
+        this.characteristics = characteristics;
+        this.description = description;
+        this.categoryId = categoryId;
+    }
 
     public String getName() {
         return name;
@@ -55,9 +62,7 @@ public class NewProductRequest {
         return categoryId;
     }
 
-    public Product toModel(EntityManager em, User owner) {
-        Category category = em.find(Category.class, categoryId);
-        Assert.notNull(category);
+    public Product toModel(Category category, User owner) {
         return new Product(name, price, availableQuantity, characteristics, description, category, owner);
     }
 }
