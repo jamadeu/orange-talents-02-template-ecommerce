@@ -5,7 +5,6 @@ import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.product.dto.CharacteristicRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
-import br.com.zup.mercadolivre.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,9 +34,6 @@ class ProductControllerTestIT {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -70,6 +67,108 @@ class ProductControllerTestIT {
         ).andExpect(MockMvcResultMatchers
                 .status()
                 .is(200)
+        ).andReturn();
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when name is null")
+    void test2() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                null, new BigDecimal(10), 10, characteristics, "description", category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
+        ).andReturn();
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when value is null")
+    void test3() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", null, 10, characteristics, "description", category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
+        ).andReturn();
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when value is less than 1")
+    void test4() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", new BigDecimal(0), 10, characteristics, "description", category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
+        ).andReturn();
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when availableQuantity is less than 0")
+    void test5() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", new BigDecimal(10), -1, characteristics, "description", category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
+        ).andReturn();
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when availableQuantity is null")
+    void test6() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", new BigDecimal(10), -1, characteristics, "description", category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
+        ).andReturn();
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when description  is null")
+    void test7() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", new BigDecimal(10), 1, characteristics, null, category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(400)
         ).andReturn();
     }
 }

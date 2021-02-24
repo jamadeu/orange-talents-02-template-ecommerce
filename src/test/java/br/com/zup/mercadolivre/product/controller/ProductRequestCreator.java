@@ -18,4 +18,17 @@ public class ProductRequestCreator {
                 categoryId
         );
     }
+
+    public static NewProductRequest createNewProductRequest(String name, BigDecimal value, int availableQuantity,
+                                                            List<CharacteristicRequest> characteristics,
+                                                            String description, Long categoryId) {
+        return new NewProductRequest(
+                name,
+                value,
+                availableQuantity,
+                characteristics,
+                description,
+                categoryId
+        );
+    }
 }
