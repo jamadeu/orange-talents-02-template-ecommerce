@@ -1,6 +1,5 @@
 package br.com.zup.mercadolivre.product.controller;
 
-import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.product.dto.ImageRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
@@ -44,7 +43,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/details")
-    public ResponseEntity<?> productDetail(@PathVariable("id") Long productId) {
+    public ResponseEntity<?> productDetails(@PathVariable("id") Long productId) {
         Product product = em.find(Product.class, productId);
         if (product == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
@@ -55,18 +54,13 @@ public class ProductController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> create(@RequestBody @Valid NewProductRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Void> create(@RequestBody @Valid NewProductRequest request, @AuthenticationPrincipal UserDetails userDetails) {
         Optional<User> optional = userRepository.findByEmail(userDetails.getUsername());
         if (optional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
         User owner = optional.get();
-        Optional<Category> optionalCategory = categoryRepository.findById(request.getCategoryId());
-        if(optionalCategory.isEmpty()){
-            return ResponseEntity.badRequest().body("Category not found");
-        }
-        Category category = optionalCategory.get();
-        Product product = request.toModel(category, owner);
+        Product product = request.toModel(categoryRepository, owner);
         productRepository.save(product);
         return ResponseEntity.ok().build();
     }

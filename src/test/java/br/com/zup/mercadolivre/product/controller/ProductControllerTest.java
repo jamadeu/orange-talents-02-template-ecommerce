@@ -5,6 +5,8 @@ import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.product.dto.CharacteristicRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
+import br.com.zup.mercadolivre.product.model.Product;
+import br.com.zup.mercadolivre.product.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,13 +26,17 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
-class ProductControllerTestIT {
+class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,6 +46,9 @@ class ProductControllerTestIT {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    ProductRepository productRepository;
 
     private Category category;
 
@@ -66,8 +75,12 @@ class ProductControllerTestIT {
                 .content(objectMapper.writeValueAsString(newProductRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(200)
-        ).andReturn();
+                .isOk()
+        );
+
+        Product product = productRepository.findByName(newProductRequest.getName()).orElseThrow();
+
+        assertEquals(product.getCategory().getId(), newProductRequest.getCategoryId());
     }
 
     @Test
@@ -83,7 +96,7 @@ class ProductControllerTestIT {
                 .content(objectMapper.writeValueAsString(newProductRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
+                .isBadRequest()
         ).andReturn();
     }
 
@@ -100,8 +113,12 @@ class ProductControllerTestIT {
                 .content(objectMapper.writeValueAsString(newProductRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
-        ).andReturn();
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
     }
 
     @Test
@@ -117,8 +134,12 @@ class ProductControllerTestIT {
                 .content(objectMapper.writeValueAsString(newProductRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
-        ).andReturn();
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
     }
 
     @Test
@@ -134,8 +155,12 @@ class ProductControllerTestIT {
                 .content(objectMapper.writeValueAsString(newProductRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
-        ).andReturn();
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
     }
 
     @Test
@@ -151,8 +176,12 @@ class ProductControllerTestIT {
                 .content(objectMapper.writeValueAsString(newProductRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
-        ).andReturn();
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
     }
 
     @Test
@@ -168,7 +197,11 @@ class ProductControllerTestIT {
                 .content(objectMapper.writeValueAsString(newProductRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
-        ).andReturn();
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
     }
 }
