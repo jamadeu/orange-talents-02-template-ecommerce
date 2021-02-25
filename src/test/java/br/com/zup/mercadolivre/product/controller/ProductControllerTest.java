@@ -186,10 +186,81 @@ class ProductControllerTest {
 
     @Test
     @WithUserDetails("admin@email.com")
-    @DisplayName("create returns 400 when description  is null")
+    @DisplayName("create returns 400 when description is null")
     void test7() throws Exception {
         NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
                 "Product", new BigDecimal(10), 1, characteristics, null, category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when description has more than 1000 characters")
+    void test8() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product",
+                new BigDecimal(10),
+                1,
+                characteristics,
+                "\n" +
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dapibus rhoncus est quis facilisis. Proin tempus bibendum orci nec ultricies. Morbi rutrum dui sed consectetur aliquam. Duis iaculis arcu sit amet dictum dictum. Fusce imperdiet eleifend purus, cursus tristique lorem feugiat ac. Morbi ullamcorper metus in nisi placerat ultrices. Ut nec libero elit. Duis nec scelerisque mauris. Mauris imperdiet ipsum leo, eu ultricies diam condimentum id. Maecenas viverra purus a elit semper, interdum scelerisque diam maximus.\n" +
+                        "\n" +
+                        "Aenean sit amet diam ac tortor porta vehicula quis non ipsum. Mauris eget dolor arcu. Pellentesque vel sapien et dolor tempor tristique vitae eu nisl. Vestibulum ullamcorper enim at purus vestibulum aliquet. Mauris consequat luctus lorem, sit amet hendrerit nibh. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam erat leo, placerat a venenatis sed, lobortis non nibh. Donec accumsan elit risus, ac accumsan leo sollicitudin id. Nulla vel est luctus biam.",
+                category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when categoryId is null")
+    void test9() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", new BigDecimal(10), 1, characteristics, "description", null);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when categoryId is invalid")
+    void test10() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", new BigDecimal(10), 1, characteristics, "description", category.getId() + 1);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/product")

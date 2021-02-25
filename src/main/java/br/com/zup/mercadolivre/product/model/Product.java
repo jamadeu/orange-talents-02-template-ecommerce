@@ -30,7 +30,7 @@ public class Product {
     @PositiveOrZero
     @Column(nullable = false)
     private int availableQuantity;
-    @NotBlank
+    @NotNull
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<ProductCharacteristic> characteristics = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)

@@ -3,6 +3,7 @@ package br.com.zup.mercadolivre.product.dto;
 import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.product.model.Product;
+import br.com.zup.mercadolivre.shared.validator.annotation.IdExists;
 import br.com.zup.mercadolivre.user.model.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -36,6 +37,7 @@ public class NewProductRequest {
     private String description;
     @JsonProperty
     @NotNull
+    @IdExists(domainClass = Category.class, message = "Category not found")
     private Long categoryId;
 
     @Deprecated
