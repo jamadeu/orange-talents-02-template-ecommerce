@@ -1,7 +1,5 @@
-package br.com.zup.mercadolivre.user.controller.integration;
+package br.com.zup.mercadolivre.user.controller;
 
-import br.com.zup.mercadolivre.user.controller.AuthenticationRequestCreator;
-import br.com.zup.mercadolivre.user.controller.UserCreator;
 import br.com.zup.mercadolivre.user.dto.AuthenticationRequest;
 import br.com.zup.mercadolivre.user.model.User;
 import br.com.zup.mercadolivre.user.repository.UserRepository;
@@ -25,7 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
-class AuthenticationControllerTestIT {
+class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +52,7 @@ class AuthenticationControllerTestIT {
                 .content(objectMapper.writeValueAsString(authenticationRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(200)
+                .isOk()
         ).andReturn();
     }
 
@@ -71,7 +69,7 @@ class AuthenticationControllerTestIT {
                 .content(objectMapper.writeValueAsString(authenticationRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
+                .isBadRequest()
         ).andReturn();
     }
 
@@ -88,9 +86,7 @@ class AuthenticationControllerTestIT {
                 .content(objectMapper.writeValueAsString(authenticationRequest))
         ).andExpect(MockMvcResultMatchers
                 .status()
-                .is(400)
+                .isBadRequest()
         ).andReturn();
     }
-
-
 }
