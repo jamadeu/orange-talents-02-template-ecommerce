@@ -71,16 +71,17 @@ public class ProductController {
         Optional<User> optional = userRepository.findByEmail(userDetails.getUsername());
         Assert.isTrue(optional.isPresent(), "Error finding logged in user");
         User owner = optional.get();
-        Product product = em.find(Product.class, productId);
-        if (product == null) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        Product product = optionalProduct.get();
         if (!product.getOwner().equals(owner)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         List<String> urls = uploaderFake.send(request.getImages());
         product.addImages(urls);
-        em.merge(product);
+        productRepository.save(product);
         return ResponseEntity.ok(product);
     }
 }

@@ -2,6 +2,7 @@ package br.com.zup.mercadolivre.product.controller;
 
 import br.com.zup.mercadolivre.product.dto.CharacteristicRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
+import br.com.zup.mercadolivre.product.dto.OpinionRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -29,6 +30,22 @@ public class ProductRequestCreator {
                 characteristics,
                 description,
                 categoryId
+        );
+    }
+
+    public static OpinionRequest createOpinionRequest() {
+        return new OpinionRequest(
+                1,
+                "Opinion",
+                "description"
+        );
+    }
+
+    public static OpinionRequest createOpinionRequest(int rating, String title, String description) {
+        return new OpinionRequest(
+                rating,
+                title,
+                description
         );
     }
 }

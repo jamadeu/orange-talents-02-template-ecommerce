@@ -3,12 +3,13 @@ package br.com.zup.mercadolivre.product.controller;
 import br.com.zup.mercadolivre.product.dto.OpinionRequest;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.model.ProductOpinion;
+import br.com.zup.mercadolivre.product.repository.ProducOpinionRepository;
+import br.com.zup.mercadolivre.product.repository.ProductRepository;
 import br.com.zup.mercadolivre.user.model.User;
 import br.com.zup.mercadolivre.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,23 +27,26 @@ public class OpinionController {
     private EntityManager em;
 
     private final UserRepository userRepository;
+    final ProductRepository productRepository;
+    final ProducOpinionRepository producOpinionRepository;
 
-    public OpinionController(UserRepository userRepository) {
+    public OpinionController(UserRepository userRepository, ProductRepository productRepository, ProducOpinionRepository producOpinionRepository) {
         this.userRepository = userRepository;
+        this.productRepository = productRepository;
+        this.producOpinionRepository = producOpinionRepository;
     }
 
     @PostMapping("product/{id}/opinion")
     @Transactional
-    public ResponseEntity<?> addOpinion(@RequestBody @Valid OpinionRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
-        Optional<User> optional = userRepository.findByEmail(userDetails.getUsername());
-        Assert.isTrue(optional.isPresent(), "Error finding logged in user");
-        User user = optional.get();
-        Product product = em.find(Product.class, productId);
-        if (product == null) {
+    public ResponseEntity<Void> addOpinion(@RequestBody @Valid OpinionRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
+        User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        Product product = optionalProduct.get();
         ProductOpinion productOpinion = request.toModel(product, user);
-        em.persist(productOpinion);
-        return ResponseEntity.ok(product);
+        producOpinionRepository.save(productOpinion);
+        return ResponseEntity.ok().build();
     }
 }

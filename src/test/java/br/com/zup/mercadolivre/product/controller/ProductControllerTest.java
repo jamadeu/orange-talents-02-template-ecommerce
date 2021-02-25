@@ -7,6 +7,7 @@ import br.com.zup.mercadolivre.product.dto.CharacteristicRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.repository.ProductRepository;
+import br.com.zup.mercadolivre.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,6 +50,9 @@ class ProductControllerTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     private Category category;
 

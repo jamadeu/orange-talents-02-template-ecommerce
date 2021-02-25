@@ -18,7 +18,7 @@ public class ProductOpinion {
     @Max(value = 5, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ")
     @NotNull
     @JsonProperty
-    private Byte rating;
+    private int rating;
     @NotBlank
     @JsonProperty
     private String title;
@@ -37,7 +37,7 @@ public class ProductOpinion {
     public ProductOpinion() {
     }
 
-    public ProductOpinion(@Min(value = 1, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ") @Max(value = 5, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ") @NotNull Byte rating, @NotEmpty String title, @NotEmpty @Size(max = 500) String description, Product product, User user) {
+    public ProductOpinion(@Min(value = 1, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ") @Max(value = 5, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ") @NotNull int rating, @NotEmpty String title, @NotEmpty @Size(max = 500) String description, Product product, User user) {
         this.rating = rating;
         this.title = title;
         this.description = description;
@@ -53,7 +53,7 @@ public class ProductOpinion {
         return id;
     }
 
-    public Byte getRating() {
+    public int getRating() {
         return rating;
     }
 
