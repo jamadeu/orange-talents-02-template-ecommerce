@@ -59,7 +59,6 @@ public class NewProductRequest {
         return categoryId;
     }
 
-
     public Product toModel(CategoryRepository categoryRepository, User owner) {
         Category category = categoryRepository.findById(categoryId).orElseThrow();
         return new Product(name, price, availableQuantity, characteristics, description, category, owner);

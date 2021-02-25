@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.product.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.URL;
 
 import javax.persistence.*;
@@ -11,10 +12,12 @@ public class ProductImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
     @NotNull
     @URL
     @Column(nullable = false, unique = true)
+    @JsonProperty
     private String url;
     @ManyToOne
     @JsonIgnore

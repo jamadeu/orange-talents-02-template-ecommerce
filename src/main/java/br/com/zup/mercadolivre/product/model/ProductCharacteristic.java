@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.product.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,10 +12,13 @@ public class ProductCharacteristic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
     @NotBlank
+    @JsonProperty
     private String name;
     @NotBlank
+    @JsonProperty
     private String description;
     @ManyToOne
     @JsonIgnore
@@ -28,10 +32,6 @@ public class ProductCharacteristic {
         this.name = name;
         this.description = description;
         this.product = product;
-    }
-
-    public ProductCharacteristic(@NotBlank String name) {
-        this.name = name;
     }
 
     @Override

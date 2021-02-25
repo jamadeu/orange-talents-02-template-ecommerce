@@ -19,7 +19,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false)
     private String name;
     @NotNull
@@ -30,7 +30,7 @@ public class Product {
     @PositiveOrZero
     @Column(nullable = false)
     private int availableQuantity;
-    @NotEmpty
+    @NotBlank
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<ProductCharacteristic> characteristics = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
@@ -39,7 +39,7 @@ public class Product {
     private List<ProductOpinion> opinions = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
     private List<ProductQuestion> questions = new ArrayList<>();
-    @NotEmpty
+    @NotBlank
     @Size(max = 1000)
     @Column(nullable = false)
     private String description;
@@ -98,10 +98,6 @@ public class Product {
 
     public Category getCategory() {
         return category;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 
     public List<ProductQuestion> getQuestions() {

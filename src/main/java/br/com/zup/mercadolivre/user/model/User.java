@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.user.model;
 
 import br.com.zup.mercadolivre.purchase.model.Purchase;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,34 +21,42 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false)
+    @JsonProperty
     private String name;
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false)
+    @JsonProperty
     private String address;
-    @NotEmpty
+    @NotBlank
     @CPF
     @Column(nullable = false, unique = true)
+    @JsonProperty
     private String cpf;
-    @NotEmpty
+    @NotBlank
     @Email
     @Column(nullable = false, unique = true)
+    @JsonProperty
     private String email;
-    @NotEmpty
+    @NotBlank
     @Column(nullable = false)
+    @JsonProperty
     private String password;
     @PastOrPresent
+    @JsonProperty
     private LocalDateTime createdAt = LocalDateTime.now();
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.MERGE)
+    @JsonProperty
     private List<Purchase> purchases = new ArrayList<>();
 
     @Deprecated
     public User() {
     }
 
-    public User(@NotEmpty String name, @NotEmpty String address, @NotEmpty @CPF String cpf, @NotEmpty @Email String email, @NotEmpty String password) {
+    public User(@NotBlank String name, @NotBlank String address, @NotBlank @CPF String cpf, @NotBlank @Email String email, @NotBlank String password) {
         this.name = name;
         this.address = address;
         this.cpf = cpf;
@@ -60,10 +69,6 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 
-    public List<Purchase> getPurchases() {
-        return purchases;
-    }
-    
     @Override
     public String getPassword() {
         return this.password;

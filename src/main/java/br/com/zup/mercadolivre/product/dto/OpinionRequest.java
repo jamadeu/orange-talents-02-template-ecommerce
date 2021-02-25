@@ -3,6 +3,7 @@ package br.com.zup.mercadolivre.product.dto;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.model.ProductOpinion;
 import br.com.zup.mercadolivre.user.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.*;
 
@@ -11,26 +12,17 @@ public class OpinionRequest {
     @Min(value = 1, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ")
     @Max(value = 5, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ")
     @NotNull
+    @JsonProperty
     private Byte rating;
-    @NotEmpty
+    @NotBlank
+    @JsonProperty
     private String title;
-    @NotEmpty
+    @NotBlank
     @Size(max = 500)
+    @JsonProperty
     private String description;
 
     public ProductOpinion toModel(Product product, User user) {
         return new ProductOpinion(rating, title, description, product, user);
-    }
-
-    public Byte getRating() {
-        return rating;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

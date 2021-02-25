@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.product.dto;
 
 import br.com.zup.mercadolivre.product.model.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -8,14 +9,23 @@ import java.util.stream.Collectors;
 
 public class ProductDetailsResponse {
 
+    @JsonProperty
     private List<String> images;
+    @JsonProperty
     private String productName;
+    @JsonProperty
     private BigDecimal productPrice;
+    @JsonProperty
     private List<ProductCharacteristic> productCharacteristics;
+    @JsonProperty
     private String productDescription;
+    @JsonProperty
     private Integer averageRating;
+    @JsonProperty
     private Integer totalOpinions;
+    @JsonProperty
     private List<ProductOpinion> productOpinions;
+    @JsonProperty
     private List<ProductQuestion> productQuestions;
 
     public ProductDetailsResponse(Product product) {
@@ -28,41 +38,5 @@ public class ProductDetailsResponse {
         this.totalOpinions = product.getOpinions().size();
         this.productOpinions = product.getOpinions();
         this.productQuestions = product.getQuestions();
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public BigDecimal getProductPrice() {
-        return productPrice;
-    }
-
-    public List<ProductCharacteristic> getProductCharacteristics() {
-        return productCharacteristics;
-    }
-
-    public String getProductDescription() {
-        return productDescription;
-    }
-
-    public Integer getAverageRating() {
-        return averageRating;
-    }
-
-    public Integer getTotalOpinions() {
-        return totalOpinions;
-    }
-
-    public List<ProductOpinion> getProductOpinions() {
-        return productOpinions;
-    }
-
-    public List<ProductQuestion> getProductQuestions() {
-        return productQuestions;
     }
 }

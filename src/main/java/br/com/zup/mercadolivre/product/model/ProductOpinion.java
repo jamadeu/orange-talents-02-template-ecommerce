@@ -2,6 +2,7 @@ package br.com.zup.mercadolivre.product.model;
 
 import br.com.zup.mercadolivre.user.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -11,20 +12,25 @@ public class ProductOpinion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
     @Min(value = 1, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ")
     @Max(value = 5, message = "Rating must be greater than or equal to 1 and less than or equal to 5 ")
     @NotNull
+    @JsonProperty
     private Byte rating;
-    @NotEmpty
+    @NotBlank
+    @JsonProperty
     private String title;
-    @NotEmpty
+    @NotBlank
     @Size(max = 500)
+    @JsonProperty
     private String description;
     @ManyToOne
     @JsonIgnore
     private Product product;
     @ManyToOne
+    @JsonProperty
     private User user;
 
     @Deprecated
@@ -49,14 +55,6 @@ public class ProductOpinion {
 
     public Byte getRating() {
         return rating;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
     public User getUser() {

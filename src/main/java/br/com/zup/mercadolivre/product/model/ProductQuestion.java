@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.product.model;
 
 import br.com.zup.mercadolivre.user.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -11,16 +12,21 @@ import java.time.LocalDateTime;
 public class ProductQuestion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty
     private Long id;
     @NotEmpty
     @Column(nullable = false)
+    @JsonProperty
     private String title;
     @NotNull
     @Column(nullable = false)
+    @JsonProperty
     private LocalDateTime createdAt = LocalDateTime.now();
     @ManyToOne
+    @JsonProperty
     private User user;
     @ManyToOne
+    @JsonProperty
     private Product product;
 
     @Deprecated
@@ -35,14 +41,6 @@ public class ProductQuestion {
 
     public Long getId() {
         return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
     }
 
     public Long getUser() {
