@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.product.model;
 
 import br.com.zup.mercadolivre.user.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -26,7 +27,7 @@ public class ProductQuestion {
     @JsonProperty
     private User user;
     @ManyToOne
-    @JsonProperty
+    @JsonIgnore
     private Product product;
 
     @Deprecated
@@ -47,7 +48,7 @@ public class ProductQuestion {
         return user.getId();
     }
 
-    public String getProduct() {
-        return product.getName();
+    public Product getProduct() {
+        return product;
     }
 }

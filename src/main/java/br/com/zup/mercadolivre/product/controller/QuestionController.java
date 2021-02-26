@@ -3,7 +3,7 @@ package br.com.zup.mercadolivre.product.controller;
 import br.com.zup.mercadolivre.product.dto.NewQuestionRequest;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.model.ProductQuestion;
-import br.com.zup.mercadolivre.product.repository.ProductQUestionRepository;
+import br.com.zup.mercadolivre.product.repository.ProductQuestionRepository;
 import br.com.zup.mercadolivre.product.repository.ProductRepository;
 import br.com.zup.mercadolivre.shared.validator.annotation.IdExists;
 import br.com.zup.mercadolivre.user.model.User;
@@ -23,11 +23,11 @@ import java.util.List;
 @RestController
 public class QuestionController {
 
-    private final ProductQUestionRepository productQUestionRepository;
+    private final ProductQuestionRepository productQUestionRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    public QuestionController(UserRepository userRepository, ProductRepository productRepository, ProductQUestionRepository productQUestionRepository) {
+    public QuestionController(UserRepository userRepository, ProductRepository productRepository, ProductQuestionRepository productQUestionRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.productQUestionRepository = productQUestionRepository;
