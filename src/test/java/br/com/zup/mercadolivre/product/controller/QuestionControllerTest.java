@@ -26,14 +26,17 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
@@ -94,6 +97,70 @@ class QuestionControllerTest {
         ProductQuestion productQuestion = productQuestionRepository.findByTitle(questionRequest.getTitle()).orElseThrow();
 
         assertEquals(productQuestion.getProduct().getId(), product.getId());
+    }
+
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("createQuestion returns status code 400 when title is null")
+    void test2() throws Exception {
+        NewQuestionRequest questionRequest = ProductRequestCreator.createQuestionRequest(null);
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/question").buildAndExpand(product.getId()).toUri();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(questionRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<ProductQuestion> optionalProductQuestion = productQuestionRepository.findByTitle(questionRequest.getTitle());
+
+        assertTrue(optionalProductQuestion.isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("createQuestion returns status code 400 when title is empty")
+    void test3() throws Exception {
+        NewQuestionRequest questionRequest = ProductRequestCreator.createQuestionRequest(" ");
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/question").buildAndExpand(product.getId()).toUri();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(questionRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<ProductQuestion> optionalProductQuestion = productQuestionRepository.findByTitle(questionRequest.getTitle());
+
+        assertTrue(optionalProductQuestion.isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("createQuestion returns status code 400 when product is not found")
+    void test4() throws Exception {
+        NewQuestionRequest questionRequest = ProductRequestCreator.createQuestionRequest("Question");
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/question").buildAndExpand(product.getId() + 1).toUri();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(questionRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        ).andDo(MockMvcResultHandlers.print());
+
+        Optional<ProductQuestion> optionalProductQuestion = productQuestionRepository.findByTitle(questionRequest.getTitle());
+
+        assertTrue(optionalProductQuestion.isEmpty());
     }
 
 }

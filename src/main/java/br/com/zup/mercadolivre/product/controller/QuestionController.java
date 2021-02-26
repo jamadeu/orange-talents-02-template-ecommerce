@@ -37,7 +37,7 @@ public class QuestionController {
     @Transactional
     public ResponseEntity<List<ProductQuestion>> createQuestion(
             @RequestBody @Valid NewQuestionRequest request,
-            @PathVariable("id") @IdExists(domainClass = ProductQuestion.class, message = "Product not found") Long productId,
+            @Valid @PathVariable("id") @IdExists(domainClass = ProductQuestion.class, message = "Product not found") Long productId,
             @AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
         Product product = productRepository.findById(productId).orElseThrow();
