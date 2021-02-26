@@ -7,11 +7,11 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-@Constraint(validatedBy = {IdExistsValidator.class })
+@Target({ElementType.FIELD, ElementType.PARAMETER})
+@Constraint(validatedBy = {IdExistsValidator.class})
 @Documented
 public @interface IdExists {
-    String message() default "FieldUnique.message";
+    String message() default "IdExists.message";
 
     Class<?>[] groups() default {};
 
