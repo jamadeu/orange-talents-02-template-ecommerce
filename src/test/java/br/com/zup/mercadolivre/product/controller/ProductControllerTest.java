@@ -7,6 +7,8 @@ import br.com.zup.mercadolivre.product.dto.CharacteristicRequest;
 import br.com.zup.mercadolivre.product.dto.NewProductRequest;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.repository.ProductRepository;
+import br.com.zup.mercadolivre.user.controller.UserCreator;
+import br.com.zup.mercadolivre.user.model.User;
 import br.com.zup.mercadolivre.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,12 +24,16 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -55,8 +61,8 @@ class ProductControllerTest {
     UserRepository userRepository;
 
     private Category category;
-
     private final List<CharacteristicRequest> characteristics = new ArrayList<>();
+    private User user;
 
     @BeforeEach
     void setup() {
@@ -64,6 +70,7 @@ class ProductControllerTest {
         characteristics.add(new CharacteristicRequest("Characteristic1", "description"));
         characteristics.add(new CharacteristicRequest("Characteristic2", "description"));
         characteristics.add(new CharacteristicRequest("Characteristic3", "description"));
+        user = userRepository.save(UserCreator.createUserPasswordEncrypted());
     }
 
 
@@ -279,4 +286,43 @@ class ProductControllerTest {
 
         assertTrue(optionalProduct.isEmpty());
     }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("productDetails returns 200 when successful")
+    void test11() throws Exception {
+        Product product = ProductRequestCreator.createNewProductRequest(category.getId(), characteristics).toModel(categoryRepository, user);
+        productRepository.save(product);
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/details").buildAndExpand(product.getId()).toUri();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isOk()
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andDo(MockMvcResultHandlers.print());
+
+        /*
+          TODO - add image, productOpinions, productQuestions and validate returned json
+         */
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("productDetails returns 400 when product is not found")
+    void test12() throws Exception {
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/details").buildAndExpand(new Random().nextLong()).toUri();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get(uri)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+    }
+
+
 }

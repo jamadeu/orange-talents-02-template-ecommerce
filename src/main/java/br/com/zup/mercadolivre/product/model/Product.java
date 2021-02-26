@@ -131,6 +131,9 @@ public class Product {
 
     public Integer calcAverageRating(){
         int total = this.opinions.stream().mapToInt(ProductOpinion::getRating).sum();
+        if(total <= 0){
+            return 5;
+        }
         return total/opinions.size();
     }
 

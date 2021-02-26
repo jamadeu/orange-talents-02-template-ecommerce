@@ -16,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
@@ -26,9 +24,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/product")
 public class ProductController {
-
-    @PersistenceContext
-    private EntityManager em;
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
@@ -44,10 +39,11 @@ public class ProductController {
 
     @GetMapping("/{id}/details")
     public ResponseEntity<?> productDetails(@PathVariable("id") Long productId) {
-        Product product = em.find(Product.class, productId);
-        if (product == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
+            return ResponseEntity.badRequest().body("Product not found");
         }
+        Product product = optionalProduct.get();
         return ResponseEntity.ok(new ProductDetailsResponse(product));
     }
 
