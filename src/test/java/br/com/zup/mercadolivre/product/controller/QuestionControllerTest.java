@@ -162,5 +162,4 @@ class QuestionControllerTest {
 
         assertTrue(optionalProductQuestion.isEmpty());
     }
-
 }
