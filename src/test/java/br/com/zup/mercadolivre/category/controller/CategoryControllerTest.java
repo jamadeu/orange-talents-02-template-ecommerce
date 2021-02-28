@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -98,7 +99,8 @@ class CategoryControllerTest {
     @WithMockUser(username = "user@email.com", password = "123456")
     @DisplayName("create returns status code 400 when idMotherCategory is invalid")
     void test3() throws Exception {
-        NewCategoryRequest newCategoryRequest = CategoryCreator.createNewCategoryRequest("Category", idMotherCategory + 1);
+        long invalidIdMotherCategory = Math.abs(new Random().nextLong());
+        NewCategoryRequest newCategoryRequest = CategoryCreator.createNewCategoryRequest("Category", invalidIdMotherCategory);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/category")
@@ -121,7 +123,7 @@ class CategoryControllerTest {
     @WithMockUser(username = "user@email.com", password = "123456")
     @DisplayName("create returns status code 400 when name is invalid")
     void test4() throws Exception {
-        NewCategoryRequest newCategoryRequest = CategoryCreator.createNewCategoryRequest(null, idMotherCategory + 1);
+        NewCategoryRequest newCategoryRequest = CategoryCreator.createNewCategoryRequest(null, idMotherCategory);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/category")

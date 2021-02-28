@@ -330,4 +330,116 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
         ).andReturn();
     }
+
+    @Test
+    @DisplayName("create returns status code 400 when name is empty")
+    void test13() throws Exception {
+        NewUserRequest newUserRequest = UserCreator.createNewUserRequest(
+                " ",
+                "Address",
+                "949.053.040-91",
+                "user@email.com",
+                "123456"
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newUserRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        Optional<User> optionalUser = userRepository.findByEmail(newUserRequest.getEmail());
+
+        assertTrue(optionalUser.isEmpty());
+    }
+
+    @Test
+    @DisplayName("create returns status code 400 when address is empty")
+    void test14() throws Exception {
+        NewUserRequest newUserRequest = UserCreator.createNewUserRequest(
+                "User",
+                " ",
+                "949.053.040-91",
+                "user@email.com",
+                "123456"
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newUserRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        Optional<User> optionalUser = userRepository.findByEmail(newUserRequest.getEmail());
+
+        assertTrue(optionalUser.isEmpty());
+    }
+
+    @Test
+    @DisplayName("create returns status code 400 when cpf is empty")
+    void test15() throws Exception {
+        NewUserRequest newUserRequest = UserCreator.createNewUserRequest(
+                "User",
+                "Address",
+                " ",
+                "user@email.com",
+                "123456"
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newUserRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        Optional<User> optionalUser = userRepository.findByEmail(newUserRequest.getEmail());
+
+        assertTrue(optionalUser.isEmpty());
+    }
+
+    @Test
+    @DisplayName("create returns status code 400 when email is empty")
+    void test16() throws Exception {
+        NewUserRequest newUserRequest = UserCreator.createNewUserRequest(
+                "User",
+                "Address",
+                "949.053.040-91",
+                " ",
+                "123456"
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newUserRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        Optional<User> optionalUser = userRepository.findByCpf(newUserRequest.getCpf());
+
+        assertTrue(optionalUser.isEmpty());
+    }
 }

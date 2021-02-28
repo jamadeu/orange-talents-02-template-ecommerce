@@ -176,29 +176,8 @@ class ProductControllerTest {
 
     @Test
     @WithUserDetails("admin@email.com")
-    @DisplayName("create returns 400 when availableQuantity is null")
-    void test6() throws Exception {
-        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
-                "Product", new BigDecimal(10), -1, characteristics, "description", category.getId());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/product")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(newProductRequest))
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
-
-        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
-
-        assertTrue(optionalProduct.isEmpty());
-    }
-
-    @Test
-    @WithUserDetails("admin@email.com")
     @DisplayName("create returns 400 when description is null")
-    void test7() throws Exception {
+    void test6() throws Exception {
         NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
                 "Product", new BigDecimal(10), 1, characteristics, null, category.getId());
 
@@ -219,7 +198,7 @@ class ProductControllerTest {
     @Test
     @WithUserDetails("admin@email.com")
     @DisplayName("create returns 400 when description has more than 1000 characters")
-    void test8() throws Exception {
+    void test7() throws Exception {
         NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
                 "Product",
                 new BigDecimal(10),
@@ -248,7 +227,7 @@ class ProductControllerTest {
     @Test
     @WithUserDetails("admin@email.com")
     @DisplayName("create returns 400 when categoryId is null")
-    void test9() throws Exception {
+    void test8() throws Exception {
         NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
                 "Product", new BigDecimal(10), 1, characteristics, "description", null);
 
@@ -269,9 +248,9 @@ class ProductControllerTest {
     @Test
     @WithUserDetails("admin@email.com")
     @DisplayName("create returns 400 when categoryId is invalid")
-    void test10() throws Exception {
+    void test9() throws Exception {
         NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
-                "Product", new BigDecimal(10), 1, characteristics, "description", category.getId() + 1);
+                "Product", new BigDecimal(10), 1, characteristics, "description", Math.abs(new Random().nextLong()));
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/product")
@@ -290,7 +269,7 @@ class ProductControllerTest {
     @Test
     @WithUserDetails("admin@email.com")
     @DisplayName("productDetails returns 200 when successful")
-    void test11() throws Exception {
+    void test10() throws Exception {
         Product product = ProductRequestCreator.createNewProductRequest(category.getId(), characteristics).toModel(categoryRepository, user);
         productRepository.save(product);
         URI uri = UriComponentsBuilder.fromPath("/product/{id}/details").buildAndExpand(product.getId()).toUri();
@@ -313,8 +292,8 @@ class ProductControllerTest {
     @Test
     @WithUserDetails("admin@email.com")
     @DisplayName("productDetails returns 400 when product is not found")
-    void test12() throws Exception {
-        URI uri = UriComponentsBuilder.fromPath("/product/{id}/details").buildAndExpand(new Random().nextLong()).toUri();
+    void test11() throws Exception {
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/details").buildAndExpand(Math.abs(new Random().nextLong())).toUri();
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get(uri)
@@ -322,6 +301,44 @@ class ProductControllerTest {
                 .status()
                 .isBadRequest()
         );
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when name is empty")
+    void test12() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                " ", new BigDecimal(10), 10, characteristics, "description", category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        ).andReturn();
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("create returns 400 when description is empty")
+    void test13() throws Exception {
+        NewProductRequest newProductRequest = ProductRequestCreator.createNewProductRequest(
+                "Product", new BigDecimal(10), 1, characteristics, " ", category.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/product")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(newProductRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Product> optionalProduct = productRepository.findByName(newProductRequest.getName());
+
+        assertTrue(optionalProduct.isEmpty());
     }
 
 

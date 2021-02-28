@@ -34,6 +34,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -147,7 +148,8 @@ class QuestionControllerTest {
     @DisplayName("createQuestion returns status code 400 when product is not found")
     void test4() throws Exception {
         NewQuestionRequest questionRequest = ProductRequestCreator.createQuestionRequest("Question");
-        URI uri = UriComponentsBuilder.fromPath("/product/{id}/question").buildAndExpand(product.getId() + 1).toUri();
+        long invalidProductId = Math.abs(new Random().nextLong());
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/question").buildAndExpand(invalidProductId).toUri();
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)

@@ -35,6 +35,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -144,7 +145,7 @@ class OpinionControllerTest {
 
     @Test
     @WithUserDetails("admin@email.com")
-    @DisplayName("addOpinion returns status code 400 when title is null")
+    @DisplayName("addOpinion returns status code 400 when description is null")
     void test4() throws Exception {
         OpinionRequest opinionRequest = ProductRequestCreator.createOpinionRequest(1, "title", null);
         URI uri = UriComponentsBuilder.fromPath("/product/{id}/opinion").buildAndExpand(product.getId()).toUri();
@@ -168,7 +169,7 @@ class OpinionControllerTest {
 
     @Test
     @WithUserDetails("admin@email.com")
-    @DisplayName("addOpinion returns status code 400 when has more than 500 characters")
+    @DisplayName("addOpinion returns status code 400 when description has more than 500 characters")
     void test5() throws Exception {
         OpinionRequest opinionRequest = ProductRequestCreator.createOpinionRequest(1,
                 "title",
@@ -185,6 +186,31 @@ class OpinionControllerTest {
         ).andExpect(MockMvcResultMatchers
                 .content()
                 .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        Optional<ProductOpinion> optionalProductOpinion = producOpinionRepository.findByTitle(opinionRequest.getTitle());
+
+        assertTrue(optionalProductOpinion.isEmpty());
+    }
+
+    @Test
+    @WithUserDetails("admin@email.com")
+    @DisplayName("addOpinion returns status code 400 when product is not found")
+    void test6() throws Exception {
+        OpinionRequest opinionRequest = ProductRequestCreator.createOpinionRequest(1, "title", "description");
+        long invalidProductId = Math.abs(new Random().nextLong());
+        URI uri = UriComponentsBuilder.fromPath("/product/{id}/opinion").buildAndExpand(invalidProductId).toUri();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(opinionRequest))
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .string("Product not found")
         );
 
         Optional<ProductOpinion> optionalProductOpinion = producOpinionRepository.findByTitle(opinionRequest.getTitle());
