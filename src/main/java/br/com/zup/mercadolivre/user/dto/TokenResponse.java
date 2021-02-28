@@ -1,14 +1,16 @@
 package br.com.zup.mercadolivre.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class TokenResponse {
 
     @JsonProperty
-    private final String tokenType;
+    final String tokenType;
     @JsonProperty
-    private final String token;
+    final String token;
 
+    @JsonCreator
     public TokenResponse(String token, String tokenType) {
         this.token = token;
         this.tokenType = tokenType;

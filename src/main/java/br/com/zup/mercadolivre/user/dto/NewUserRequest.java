@@ -2,6 +2,7 @@ package br.com.zup.mercadolivre.user.dto;
 
 import br.com.zup.mercadolivre.shared.validator.annotation.FieldUnique;
 import br.com.zup.mercadolivre.user.model.User;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.br.CPF;
@@ -29,12 +30,13 @@ public class NewUserRequest {
     @Email
     @FieldUnique(message = "Email must be unique", fieldName = "email", domainClass = User.class)
     @JsonProperty
-    private String email;
+    final String email;
     @NotBlank
     @Length(min = 6)
     @JsonProperty
-    private String password;
+    final String password;
 
+    @JsonCreator
     public NewUserRequest(@NotEmpty String name, @NotEmpty @NotBlank String address, @NotEmpty @CPF String cpf, @NotEmpty @Email String email, @NotEmpty @Min(6) String password) {
         this.name = name;
         this.address = address;

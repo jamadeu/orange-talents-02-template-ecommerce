@@ -3,6 +3,7 @@ package br.com.zup.mercadolivre.product.dto;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.model.ProductQuestion;
 import br.com.zup.mercadolivre.user.model.User;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
@@ -12,12 +13,9 @@ public class NewQuestionRequest {
 
     @NotBlank
     @JsonProperty
-    private String title;
+    final String title;
 
-    @Deprecated
-    public NewQuestionRequest() {
-    }
-
+    @JsonCreator
     public NewQuestionRequest(@NotBlank String title) {
         this.title = title;
     }

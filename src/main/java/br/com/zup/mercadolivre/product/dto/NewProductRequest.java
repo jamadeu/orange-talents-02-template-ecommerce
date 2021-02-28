@@ -5,6 +5,7 @@ import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.shared.validator.annotation.IdExists;
 import br.com.zup.mercadolivre.user.model.User;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.*;
@@ -16,34 +17,31 @@ public class NewProductRequest {
 
     @JsonProperty
     @NotBlank
-    private String name;
+    final String name;
     @JsonProperty
     @NotNull
     @Positive
-    private BigDecimal price;
+    final BigDecimal price;
     @JsonProperty
     @NotNull
     @PositiveOrZero
-    private int availableQuantity;
+    final int availableQuantity;
     @JsonProperty
     @NotNull
-    private List<CharacteristicRequest> characteristics = new ArrayList<>();
+    final List<CharacteristicRequest> characteristics = new ArrayList<>();
     @JsonProperty
     @NotNull
-    private List<ImageRequest> images = new ArrayList<>();
+    final List<ImageRequest> images = new ArrayList<>();
     @JsonProperty
     @NotBlank
     @Size(max = 1000)
-    private String description;
+    final String description;
     @JsonProperty
     @NotNull
     @IdExists(domainClass = Category.class, message = "Category not found")
-    private Long categoryId;
+    final Long categoryId;
 
-    @Deprecated
-    public NewProductRequest() {
-    }
-
+    @JsonCreator
     public NewProductRequest(@NotBlank String name, @NotNull @Positive BigDecimal price, @NotNull @PositiveOrZero int availableQuantity, @NotNull List<CharacteristicRequest> characteristics, @NotBlank @Size(max = 1000) String description, @NotNull Long categoryId) {
         this.name = name;
         this.price = price;

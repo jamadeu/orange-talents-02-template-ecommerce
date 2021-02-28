@@ -46,25 +46,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 class OpinionControllerTest {
 
+    private final List<CharacteristicRequest> characteristics = new ArrayList<>();
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper objectMapper;
-
     @Autowired
     CategoryRepository categoryRepository;
-
     @Autowired
     ProducOpinionRepository producOpinionRepository;
-
     @Autowired
     ProductRepository productRepository;
-
     @Autowired
     UserRepository userRepository;
-
-    private final List<CharacteristicRequest> characteristics = new ArrayList<>();
     Product product;
 
     @BeforeEach

@@ -3,6 +3,7 @@ package br.com.zup.mercadolivre.category.dto;
 import br.com.zup.mercadolivre.category.model.Category;
 import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import br.com.zup.mercadolivre.shared.validator.annotation.FieldUnique;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
@@ -15,11 +16,12 @@ public class NewCategoryRequest {
     @NotBlank
     @FieldUnique(message = "Category already exists", fieldName = "name", domainClass = Category.class)
     @JsonProperty
-    private String name;
+    final String name;
     @Positive
     @JsonProperty
-    private Long idMotherCategory;
+    final Long idMotherCategory;
 
+    @JsonCreator
     public NewCategoryRequest(@NotBlank String name, @Positive Long idMotherCategory) {
         this.name = name;
         this.idMotherCategory = idMotherCategory;
@@ -46,7 +48,7 @@ public class NewCategoryRequest {
         if (this.idMotherCategory != null) {
             Optional<Category> optionalCategory = categoryRepository.findById(idMotherCategory);
             Assert.isTrue(optionalCategory.isPresent(), "Mother Category not found");
-            category.setMotherCategory(optionalCategory.get());
+            category.addMotherCategory(optionalCategory.get(), categoryRepository);
         }
         return category;
     }

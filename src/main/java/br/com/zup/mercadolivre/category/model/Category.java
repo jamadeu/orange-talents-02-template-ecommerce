@@ -1,5 +1,6 @@
 package br.com.zup.mercadolivre.category.model;
 
+import br.com.zup.mercadolivre.category.repository.CategoryRepository;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -28,8 +29,10 @@ public class Category {
         this.name = name;
     }
 
-    public void setMotherCategory(Category motherCategory) {
-        this.motherCategory = motherCategory;
+    public void addMotherCategory(Category motherCategory, CategoryRepository categoryRepository) {
+        if (categoryRepository.existsById(motherCategory.getId())) {
+            this.motherCategory = motherCategory;
+        }
     }
 
     public Long getId() {

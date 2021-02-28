@@ -32,13 +32,13 @@ public class Product {
     private int availableQuantity;
     @NotNull
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
-    private List<ProductCharacteristic> characteristics = new ArrayList<>();
+    final List<ProductCharacteristic> characteristics = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
-    private List<ProductImage> images = new ArrayList<>();
+    final List<ProductImage> images = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
-    private List<ProductOpinion> opinions = new ArrayList<>();
+    final List<ProductOpinion> opinions = new ArrayList<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE)
-    private List<ProductQuestion> questions = new ArrayList<>();
+    final List<ProductQuestion> questions = new ArrayList<>();
     @NotBlank
     @Size(max = 1000)
     @Column(nullable = false)
@@ -51,7 +51,7 @@ public class Product {
     private User owner;
     @NotNull
     @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    final LocalDateTime createdAt = LocalDateTime.now();
 
     @Deprecated
     public Product() {

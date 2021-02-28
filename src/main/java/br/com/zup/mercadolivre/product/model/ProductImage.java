@@ -39,8 +39,4 @@ public class ProductImage {
     public String getUrl() {
         return url;
     }
-
-    public Product getProduct() {
-        return product;
-    }
 }

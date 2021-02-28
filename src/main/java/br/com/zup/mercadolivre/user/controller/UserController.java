@@ -1,7 +1,6 @@
 package br.com.zup.mercadolivre.user.controller;
 
 import br.com.zup.mercadolivre.user.dto.NewUserRequest;
-import br.com.zup.mercadolivre.user.dto.UserResponse;
 import br.com.zup.mercadolivre.user.model.User;
 import br.com.zup.mercadolivre.user.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +24,9 @@ public class UserController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> create(@RequestBody @Valid NewUserRequest request) {
+    public ResponseEntity<Void> create(@RequestBody @Valid NewUserRequest request) {
         User user = request.toModel();
         userRepository.save(user);
-        return ResponseEntity.ok(new UserResponse(user));
+        return ResponseEntity.ok().build();
     }
 }

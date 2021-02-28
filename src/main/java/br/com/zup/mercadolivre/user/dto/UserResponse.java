@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.user.dto;
 
 import br.com.zup.mercadolivre.user.model.User;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
@@ -8,16 +9,17 @@ import java.time.LocalDateTime;
 public class UserResponse {
 
     @JsonProperty
-    private String name;
+    final String name;
     @JsonProperty
-    private String address;
+    final String address;
     @JsonProperty
-    private String cpf;
+    final String cpf;
     @JsonProperty
-    private String email;
+    final String email;
     @JsonProperty
-    private LocalDateTime createdAt;
+    final LocalDateTime createdAt;
 
+    @JsonCreator
     public UserResponse(User user) {
         this.name = user.getName();
         this.address = user.getAddress();

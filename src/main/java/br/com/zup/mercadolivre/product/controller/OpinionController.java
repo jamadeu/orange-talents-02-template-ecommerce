@@ -15,16 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
 public class OpinionController {
-    @PersistenceContext
-    private EntityManager em;
 
     private final UserRepository userRepository;
     final ProductRepository productRepository;
@@ -38,11 +34,11 @@ public class OpinionController {
 
     @PostMapping("product/{id}/opinion")
     @Transactional
-    public ResponseEntity<Void> addOpinion(@RequestBody @Valid OpinionRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> addOpinion(@RequestBody @Valid OpinionRequest request, @PathVariable("id") Long productId, @AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByEmail(userDetails.getUsername()).orElseThrow();
         Optional<Product> optionalProduct = productRepository.findById(productId);
         if (optionalProduct.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body("Product not found");
         }
         Product product = optionalProduct.get();
         ProductOpinion productOpinion = request.toModel(product, user);

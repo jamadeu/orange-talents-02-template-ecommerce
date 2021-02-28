@@ -1,6 +1,7 @@
 package br.com.zup.mercadolivre.product.dto;
 
 import br.com.zup.mercadolivre.product.model.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
@@ -29,6 +30,7 @@ public class ProductDetailsResponse {
     @JsonProperty
     private List<ProductQuestion> productQuestions;
 
+    @JsonCreator
     public ProductDetailsResponse(@NotNull Product product) {
         this.images = product.getImages().stream().map(ProductImage::getUrl).collect(Collectors.toList());
         this.productName = product.getName();

@@ -47,10 +47,10 @@ public class User implements UserDetails {
     private String password;
     @PastOrPresent
     @JsonProperty
-    private LocalDateTime createdAt = LocalDateTime.now();
+    final LocalDateTime createdAt = LocalDateTime.now();
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.MERGE)
     @JsonProperty
-    private List<Purchase> purchases = new ArrayList<>();
+    final List<Purchase> purchases = new ArrayList<>();
 
     @Deprecated
     public User() {

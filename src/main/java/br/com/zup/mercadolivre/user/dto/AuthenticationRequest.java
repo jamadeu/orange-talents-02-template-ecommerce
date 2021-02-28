@@ -1,5 +1,6 @@
 package br.com.zup.mercadolivre.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -10,22 +11,15 @@ public class AuthenticationRequest {
     @NotBlank
     @Email
     @JsonProperty
-    private String email;
+    final String email;
     @NotBlank
     @JsonProperty
-    private String password;
+    final String password;
 
+    @JsonCreator
     public AuthenticationRequest(@NotBlank @Email String email, @NotBlank String password) {
         this.email = email;
         this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public UsernamePasswordAuthenticationToken convert() {
