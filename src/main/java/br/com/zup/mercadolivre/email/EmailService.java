@@ -1,8 +1,6 @@
 package br.com.zup.mercadolivre.email;
 
 import br.com.zup.mercadolivre.email.dto.SendEmailRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -14,8 +12,11 @@ import javax.validation.Valid;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSenderImpl emailSender;
+    final JavaMailSenderImpl emailSender;
+
+    public EmailService(JavaMailSenderImpl emailSender) {
+        this.emailSender = emailSender;
+    }
 
     public void sendEmail(@Valid SendEmailRequest request) {
         MimeMessage message = emailSender.createMimeMessage();

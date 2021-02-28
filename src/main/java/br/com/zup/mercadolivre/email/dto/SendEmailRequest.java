@@ -1,21 +1,29 @@
 package br.com.zup.mercadolivre.email.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 
 public class SendEmailRequest {
 
-    @NotEmpty
+    @NotBlank
     @Email
-    private String recipient;
-    @NotEmpty
-    private String from;
-    @NotEmpty
-    private String subject;
-    @NotEmpty
-    private String message;
+    @JsonProperty
+    final String recipient;
+    @NotBlank
+    @JsonProperty
+    final String from;
+    @NotBlank
+    @JsonProperty
+    final String subject;
+    @NotBlank
+    @JsonProperty
+    final String message;
 
-    public SendEmailRequest(@NotEmpty @Email String recipient, @NotEmpty String from, @NotEmpty String subject, @NotEmpty String message) {
+    @JsonCreator
+    public SendEmailRequest(@NotBlank @Email String recipient, @NotBlank String from, @NotBlank String subject, @NotBlank String message) {
         this.recipient = recipient;
         this.from = from;
         this.subject = subject;

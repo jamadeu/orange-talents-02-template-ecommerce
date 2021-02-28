@@ -1,5 +1,7 @@
 package br.com.zup.mercadolivre.product.controller;
 
+import br.com.zup.mercadolivre.email.EmailService;
+import br.com.zup.mercadolivre.email.dto.SendEmailRequest;
 import br.com.zup.mercadolivre.product.dto.NewQuestionRequest;
 import br.com.zup.mercadolivre.product.model.Product;
 import br.com.zup.mercadolivre.product.model.ProductQuestion;
@@ -23,14 +25,16 @@ import java.util.Optional;
 @RestController
 public class QuestionController {
 
-    private final ProductQuestionRepository productQUestionRepository;
-    private final UserRepository userRepository;
-    private final ProductRepository productRepository;
+    final ProductQuestionRepository productQUestionRepository;
+    final UserRepository userRepository;
+    final ProductRepository productRepository;
+    final EmailService emailService;
 
-    public QuestionController(UserRepository userRepository, ProductRepository productRepository, ProductQuestionRepository productQUestionRepository) {
+    public QuestionController(UserRepository userRepository, ProductRepository productRepository, ProductQuestionRepository productQUestionRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.productQUestionRepository = productQUestionRepository;
+        this.emailService = emailService;
     }
 
     @PostMapping("product/{id}/question")
@@ -48,7 +52,13 @@ public class QuestionController {
         Product product = optionalProduct.get();
         ProductQuestion productQuestion = request.toModel(product, user);
         productQUestionRepository.save(productQuestion);
-        System.out.println("Send email with URL to product page");
+        SendEmailRequest sendEmailRequest = new SendEmailRequest(
+                product.getOwner().getEmail(),
+                "no-reply@mecadolivre.com.br",
+                "New Question",
+                "The product " + product.getName() + " received a question. " +
+                        "http://mercadolivre.com.br/product/" + product.getId() + "/details");
+        emailService.sendEmail(sendEmailRequest);
         List<ProductQuestion> questions = product.getQuestions();
 
         return ResponseEntity.ok(questions);
